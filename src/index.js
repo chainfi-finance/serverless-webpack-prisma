@@ -38,8 +38,9 @@ class ServerlessWebpackPrisma {
   }
 
   onBeforeWebpackPackage() {
-    const servicePath = this.getSchemaPath();
-    const prismaDir = join(servicePath, 'prisma');
+    const servicePath = this.getServicePath();
+    const schemaPath = this.getSchemaPath();
+    const prismaDir = join(schemaPath, 'prisma');
     const functionNames = this.getFunctionNamesForProcess();
     for (const functionName of functionNames) {
       const cwd = join(servicePath, '.webpack', functionName);
@@ -118,6 +119,10 @@ class ServerlessWebpackPrisma {
       'service.custom.prisma.prismaPath',
       this.serverless.config.servicePath
     );
+  }
+
+  getServicePath() {
+    return this.serverless.config.servicePath
   }
 
   getDepsParam() {
