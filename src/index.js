@@ -45,7 +45,8 @@ class ServerlessWebpackPrisma {
     for (const functionName of functionNames) {
       const cwd = join(servicePath, '.webpack', functionName);
       if (this.getDepsParam()) this.installPrismaPackage({ cwd });
-      this.generatePrismaSchema({ functionName, cwd, prismaDir });
+      this.copyPrismaSchemaToFunction({ functionName, cwd, prismaDir });
+      this.generatePrismaSchema({ functionName, cwd });
       this.deleteUnusedEngines({ functionName, cwd });
       if (this.getDepsParam()) this.removePrismaPackage({ cwd });
     }
@@ -89,10 +90,9 @@ class ServerlessWebpackPrisma {
     fse.copySync(prismaDir, targetPrismaDir);
   }
 
-  generatePrismaSchema({ functionName, cwd, prismaDir }) {
+  generatePrismaSchema({ functionName, cwd }) {
     this.serverless.cli.log(`Generate prisma client for ${functionName}...`);
-    const schemaFile = join(prismaDir, 'schema.prisma');
-    childProcess.execSync(`npx prisma generate --schema=${schemaFile}`, { cwd });
+    childProcess.execSync('npx prisma generate', { cwd });
   }
 
   deleteUnusedEngines({ cwd }) {
