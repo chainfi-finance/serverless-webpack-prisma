@@ -55,13 +55,13 @@ describe('Check serverless-webpack-prisma plugin', () => {
     expect(plugin.getDepsParam()).toEqual(true);
   });
 
-  test('getPrismaVerisonParam() is default empty"', () => {
-    expect(plugin.getPrismaVerisonParam()).toEqual('');
+  test('getPrismaVersionParam() is default empty"', () => {
+    expect(plugin.getPrismaVersionParam()).toEqual('');
   });
 
-  test('getPrismaVerisonParam() is set"', () => {
+  test('getPrismaVersionParam() is set"', () => {
     plugin.serverless.service.custom.prisma = { version: '4.6.6' };
-    expect(plugin.getPrismaVerisonParam()).toEqual('4.6.6');
+    expect(plugin.getPrismaVersionParam()).toEqual('4.6.6');
   });
 
   test('getPackageManager() is "yarn"', () => {

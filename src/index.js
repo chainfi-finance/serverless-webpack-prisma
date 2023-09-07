@@ -56,7 +56,7 @@ class ServerlessWebpackPrisma {
     return _.get(this.serverless, 'service.custom.webpack.packager', 'npm');
   }
 
-  getPrismaVerisonParam() {
+  getPrismaVersionParam() {
     return _.get(this.serverless, 'service.custom.prisma.version', '');
   }
 
@@ -79,7 +79,7 @@ class ServerlessWebpackPrisma {
   }
 
   installPrismaPackage({ cwd }) {
-    let version = this.getPrismaVerisonParam();
+    let version = this.getPrismaVersionParam();
     if (version) version = `@${version}`;
     this.serverless.cli.log('Install prisma devDependencies for generate');
     this.runPackageInstallCommand({
