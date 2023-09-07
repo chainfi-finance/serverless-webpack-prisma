@@ -56,13 +56,17 @@ class ServerlessWebpackPrisma {
     return _.get(this.serverless, 'service.custom.webpack.packager', 'npm');
   }
 
-  runPackageInstallCommand({ packageName, cwd, dev }) {
+  getPrismaVerisonParam() {
+    return _.get(this.serverless, 'service.custom.prisma.version', '');
+  }
+
+  runPackageInstallCommand({ packageNameAndVersion, cwd, dev }) {
     let params = '';
     if (dev) params += '-D ';
     const command =
       this.getPackageManager() === 'npm'
-        ? `npm install ${params}${packageName}`
-        : `yarn add ${params}${packageName}`;
+        ? `npm install ${params}${packageNameAndVersion}`
+        : `yarn add ${params}${packageNameAndVersion}`;
     childProcess.execSync(command, { cwd });
   }
 
@@ -75,8 +79,14 @@ class ServerlessWebpackPrisma {
   }
 
   installPrismaPackage({ cwd }) {
+    let version = this.getPrismaVerisonParam();
+    if (version) version = `@${version}`;
     this.serverless.cli.log('Install prisma devDependencies for generate');
-    this.runPackageInstallCommand({ packageName: 'prisma', cwd, dev: true });
+    this.runPackageInstallCommand({
+      packageNameAndVersion: `prisma${version}`,
+      cwd,
+      dev: true,
+    });
   }
 
   removePrismaPackage({ cwd }) {
@@ -132,7 +142,7 @@ class ServerlessWebpackPrisma {
   }
 
   getServicePath() {
-    return this.serverless.config.servicePath
+    return this.serverless.config.servicePath;
   }
 
   getDepsParam() {
