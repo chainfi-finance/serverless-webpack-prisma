@@ -22,7 +22,10 @@ describe('Check serverless-webpack-prisma plugin', () => {
         provider: {},
         getAllFunctions: () => [],
         getFunction: () => ({}),
-        custom: { webpack: {}, prisma: { installDeps: true, prismaPath: '' } },
+        custom: {
+          webpack: {},
+          prisma: { installDeps: true, prismaPath: '' },
+        },
       },
     });
   });
@@ -50,6 +53,15 @@ describe('Check serverless-webpack-prisma plugin', () => {
   test('getDepsParam() is false"', () => {
     plugin.serverless.service.custom.prisma = { installDeps: true };
     expect(plugin.getDepsParam()).toEqual(true);
+  });
+
+  test('getPrismaVerisonParam() is default empty"', () => {
+    expect(plugin.getPrismaVerisonParam()).toEqual('');
+  });
+
+  test('getPrismaVerisonParam() is set"', () => {
+    plugin.serverless.service.custom.prisma = { version: '4.6.6' };
+    expect(plugin.getPrismaVerisonParam()).toEqual('4.6.6');
   });
 
   test('getPackageManager() is "yarn"', () => {
@@ -107,6 +119,18 @@ describe('Check serverless-webpack-prisma plugin', () => {
     const cwd = `/fake-path/${randomBytes(4).toString('hex')}`;
     childProcess.execSync.mockImplementation((command, options) => {
       expect(command).toEqual(`npm install -D prisma`);
+      expect(options).toEqual({ cwd });
+    });
+
+    plugin.installPrismaPackage({ cwd });
+  });
+
+  test('installPrismaPackage() install prisma devDeprendencies with version', () => {
+    plugin.serverless.service.custom.prisma = { version: '4.8.1' };
+    const version = '4.8.1';
+    const cwd = `/fake-path/${randomBytes(4).toString('hex')}`;
+    childProcess.execSync.mockImplementation((command, options) => {
+      expect(command).toEqual(`npm install -D prisma@${version}`);
       expect(options).toEqual({ cwd });
     });
 
