@@ -60,6 +60,10 @@ class ServerlessWebpackPrisma {
     return _.get(this.serverless, 'service.custom.prisma.version', '');
   }
 
+  getGeneratorCommand() {
+    return _.get(this.serverless, 'service.custom.prisma.generator', '');
+  }
+
   runPackageInstallCommand({ packageName, cwd, dev }) {
     let params = '';
     if (dev) params += '-D ';
@@ -105,6 +109,12 @@ class ServerlessWebpackPrisma {
     if (this.isDataProxyParam()) {
       this.serverless.cli.log(`Prisma data proxy is enabled.`);
       command += ' --data-proxy';
+    }
+    if (this.getGeneratorCommand()) {
+      this.serverless.cli.log(
+        `Running prisma generator: ${this.getGeneratorCommand()}`
+      );
+      command += ` --generator ${this.getGeneratorCommand()}`;
     }
 
     return command;

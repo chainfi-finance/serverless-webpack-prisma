@@ -160,6 +160,13 @@ describe('Check serverless-webpack-prisma plugin', () => {
     );
   });
 
+  test('generateCommand must generate a command with generator specified', () => {
+    plugin.serverless.service.custom.prisma = { generator: 'client' };
+    expect(plugin.generateCommand()).toEqual(
+      'npx prisma generate --generator client'
+    );
+  });
+
   test('generatePrismaSchema must generate engines', () => {
     const functionName = 'this-is-generate-prisma-schema-test';
     const cwd = `/fake-path/${randomBytes(4).toString('hex')}`;
