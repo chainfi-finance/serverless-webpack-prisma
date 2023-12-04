@@ -110,6 +110,12 @@ class ServerlessWebpackPrisma {
       this.serverless.cli.log(`Prisma data proxy is enabled.`);
       command += ' --data-proxy';
     }
+    if (this.noEngineParam()) {
+      this.serverless.cli.log(
+        `No Query Engine will be included in the generated client.`
+      );
+      command += ' --no-engine';
+    }
     if (this.getGeneratorCommand()) {
       this.serverless.cli.log(
         `Running prisma generator: ${this.getGeneratorCommand()}`
@@ -161,6 +167,10 @@ class ServerlessWebpackPrisma {
 
   isDataProxyParam() {
     return _.get(this.serverless, 'service.custom.prisma.dataProxy', false);
+  }
+
+  noEngineParam() {
+    return _.get(this.serverless, 'service.custom.prisma.noEngine', false);
   }
 
   // Ref: https://github.com/serverless-heaven/serverless-webpack/blob/4785eb5e5520c0ce909b8270e5338ef49fab678e/lib/utils.js#L115

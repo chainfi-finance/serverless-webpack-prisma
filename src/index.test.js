@@ -160,6 +160,11 @@ describe('Check serverless-webpack-prisma plugin', () => {
     );
   });
 
+  test('generateCommand must generate a command with no engine arguments', () => {
+    plugin.serverless.service.custom.prisma = { noEngine: true };
+    expect(plugin.generateCommand()).toEqual('npx prisma generate --no-engine');
+  });
+
   test('generateCommand must generate a command with generator specified', () => {
     plugin.serverless.service.custom.prisma = { generator: 'client' };
     expect(plugin.generateCommand()).toEqual(
